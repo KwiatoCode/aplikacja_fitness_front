@@ -1,38 +1,411 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+/* ----------- RESET & DARK THEME BODY ----------- */
+body {
+  margin: 0;
   min-height: 100vh;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(120deg, #17192a 0%, #222942 100%);
+  color: #f4f7fa;
+  transition: background 0.5s, color 0.2s;
+}
+
+/* ----------- DASHBOARD & SIDEBAR ----------- */
+.dashboard {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  background: linear-gradient(120deg, #1a2340 50%, #202546 100%);
+  min-width: 210px;
+  max-width: 230px;
+  color: #dbe7fa;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  padding: 30px 0 22px 0;
+  box-shadow: 8px 0 32px -6px #11122260;
+  position: relative;
+  animation: slideInLeft 0.6s cubic-bezier(.4,1.6,.35,1) both;
+  z-index: 2;
+}
+@keyframes slideInLeft {
+  0% { opacity: 0; transform: translateX(-44px);}
+  100% { opacity: 1; transform: none;}
+}
+.sidebar-title {
+  font-size: 1.46em;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 38px;
+  letter-spacing: 0.12px;
+  padding-bottom: 14px;
+  border-bottom: 1.5px solid #233;
+  text-shadow: 0 3px 14px #57b1ff26;
+  color: #91e0ff;
+  background: linear-gradient(90deg, #34bfff, #5a6dff 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.App-link {
-  color: #61dafb;
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+  margin-top: 14px;
+  margin-bottom: auto;
+  padding: 0 15px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.sidebar nav a {
+  color: #e1eaff;
+  text-decoration: none;
+  font-size: 1.08em;
+  padding: 10px 15px;
+  border-radius: 9px;
+  transition: background 0.19s, color 0.18s, transform 0.16s, box-shadow 0.15s;
+  position: relative;
+  box-shadow: none;
 }
+.sidebar nav a:hover, .sidebar nav a.active {
+  background: linear-gradient(90deg, #364f9b44, #59e8ff16 90%);
+  color: #25f6f9;
+  font-weight: 700;
+  transform: scale(1.06) translateX(2px);
+  box-shadow: 0 2px 13px #3386f133;
+  border-left: 4px solid #26d6ff;
+}
+
+.sidebar-footer {
+  text-align: center;
+  border-top: 1px solid #20253d;
+  padding-top: 19px;
+  margin-top: 38px;
+  font-size: 1em;
+  letter-spacing: 0.01em;
+  opacity: .85;
+}
+.sidebar-footer a {
+  color: #aee9ff;
+  font-size: 1em;
+  text-decoration: none;
+  opacity: 0.8;
+  transition: color 0.13s;
+}
+.sidebar-footer a:hover { color: #33d6ff; }
+
+/* ----------- MAIN ----------- */
+.main-area {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-header {
+  padding: 45px 50px 0 50px;
+  margin-bottom: 22px;
+}
+.main-header h1 {
+  font-size: 2.3em;
+  color: #3cf8ff;
+  margin: 0 0 11px 0;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+  text-shadow: 0 3px 22px #00fff824;
+  animation: fadeInDown 0.9s cubic-bezier(.15,1.45,.19,1) both;
+  background: linear-gradient(90deg,#4bc8ff 60%,#6f74ff 120%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+@keyframes fadeInDown {
+  0% { opacity: 0; transform: translateY(-32px);}
+  100% { opacity: 1; transform: none;}
+}
+
+.main-content {
+  flex: 1;
+  padding: 0 32px 40px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 0;
+  animation: fadeIn 0.8s;
+}
+@keyframes fadeIn { 0% {opacity:0;} 100%{opacity:1;} }
+
+/* ----------- GLASS KARTY ----------- */
+.form, .schedule-list, .exercise-list {
+  background: rgba(26,30,45,0.88);
+  border-radius: 21px;
+  padding: 38px 32px 27px 32px;
+  margin: 38px auto 0 auto;
+  max-width: 540px;
+  box-shadow: 0 13px 48px 0 #007aff17, 0 2px 14px 0 #161f401a;
+  backdrop-filter: blur(11px);
+  border: 1.8px solid rgba(60,180,255,0.09);
+  display: flex;
+  flex-direction: column;
+  gap: 19px;
+  animation: glassFadeIn 0.62s cubic-bezier(.33,1.3,.34,1) both;
+  transition: box-shadow 0.2s, background 0.18s;
+}
+@keyframes glassFadeIn {
+  0% { opacity: 0; transform: translateY(26px) scale(0.97);}
+  100% { opacity: 1; transform: none;}
+}
+
+.form h2, .schedule-list h2, .exercise-list h2 {
+  margin: 0 0 13px 0;
+  font-weight: 700;
+  font-size: 1.3em;
+  color: #30d6ff;
+  text-shadow: 0 2px 15px #3ee9ff0d;
+  text-align: center;
+  letter-spacing: 0;
+}
+
+/* ----------- INPUTS & BUTTONS ----------- */
+.form input,
+.exercise-form input,
+.schedule-list input {
+  border: 1.6px solid #252e46;
+  border-radius: 8px;
+  padding: 13px 13px;
+  font-size: 1.08em;
+  outline: none;
+  background: #232946;
+  color: #d7f4ff;
+  margin-bottom: 5px;
+  box-shadow: 0 1.5px 8px #6cf2ff0a;
+  transition: border-color 0.17s, box-shadow 0.22s, background 0.14s;
+}
+.form input:focus,
+.exercise-form input:focus,
+.schedule-list input:focus {
+  border-color: #49e4fc;
+  box-shadow: 0 0 0 3px #0be9ff2a;
+  background: #263b5a;
+  color: #fff;
+}
+
+/* ----------- BUTTONS ----------- */
+.form button,
+.exercise-form button,
+.schedule-list button {
+  background: linear-gradient(90deg,#1644a0 0%,#00c9f6 80%);
+  color: #fff;
+  font-weight: 800;
+  border: none;
+  border-radius: 7px;
+  padding: 13px 0;
+  margin-top: 6px;
+  cursor: pointer;
+  font-size: 1.09em;
+  box-shadow: 0 3px 18px #0099ff23, 0 0.5px 2px #1b1e330a;
+  transition: background 0.17s, box-shadow 0.19s, transform 0.13s;
+  position: relative;
+  overflow: hidden;
+  outline: none;
+}
+.form button:active,
+.exercise-form button:active,
+.schedule-list button:active {
+  background: linear-gradient(90deg,#166cff,#07afff 80%);
+  transform: scale(0.96);
+  box-shadow: 0 1px 8px #0d86ff25;
+}
+.form button:focus-visible {
+  outline: 2.5px solid #27d8ff99;
+}
+.form button:hover,
+.exercise-form button:hover,
+.schedule-list button:hover {
+  background: linear-gradient(90deg,#20baf3 20%,#4c8cff 100%);
+  box-shadow: 0 7px 25px #6fcbff37;
+  transform: scale(1.05);
+}
+
+/* Custom effect: animated pulse ring when hovered */
+.form button:hover::before,
+.exercise-form button:hover::before,
+.schedule-list button:hover::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 10px;
+  border: 2.5px solid #33e2ff44;
+  box-shadow: 0 0 20px #21f6ff42;
+  opacity: 0.6;
+  pointer-events: none;
+  animation: btnPulse 0.4s;
+}
+@keyframes btnPulse {
+  0% { opacity: 0; transform: scale(0.96);}
+  100% { opacity: 0.6; transform: scale(1.04);}
+}
+
+/* ----------- LOGOUT BTN ----------- */
+.logout-btn {
+  margin-bottom: 20px;
+  align-self: flex-end;
+  background: linear-gradient(90deg,#e24883,#595aff 80%);
+  color: #fff;
+  font-weight: 800;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 22px;
+  cursor: pointer;
+  font-size: 1.08em;
+  box-shadow: 0 3px 19px #6242ff33;
+  transition: background 0.18s, transform 0.13s, box-shadow 0.19s;
+  position: relative;
+  outline: none;
+  overflow: hidden;
+}
+.logout-btn:active {
+  background: linear-gradient(90deg,#ae247a,#292aff 80%);
+  transform: scale(0.96);
+}
+.logout-btn:hover {
+  background: linear-gradient(90deg,#ff249a,#36cbff 85%);
+  transform: scale(1.09);
+  box-shadow: 0 8px 35px #4cf9ff35;
+}
+.logout-btn:focus-visible {
+  outline: 2.5px solid #ffe5fb80;
+}
+
+/* ----------- INFO & ERROR ----------- */
+.info, .error {
+  margin-top: 12px;
+  padding: 11px 8px;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.08em;
+  box-shadow: 0 1px 8px #03d0fd24;
+  letter-spacing: 0.01em;
+  border: 1.5px solid #29f6ff18;
+  animation: fadeIn 0.7s;
+}
+.info {
+  background: #1e404f;
+  color: #44ffd3;
+}
+.error {
+  background: #370808;
+  color: #fa6262;
+  border: 1.5px solid #ff3842a3;
+}
+
+/* ----------- LISTS ----------- */
+.exercise-list ul,
+.schedule-ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.exercise-list li,
+.schedule-li {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  border-bottom: 1px solid #282b3f;
+  padding: 12px 0 13px 0;
+  justify-content: space-between;
+  gap: 12px;
+  animation: fadeInUp 0.41s;
+  min-height: 38px;
+}
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(17px);}
+  100% { opacity: 1; transform: none;}
+}
+.exercise-list li:last-child,
+.schedule-li:last-child {
+  border-bottom: none;
+}
+.exercise-list b {
+  font-size: 1.16em;
+  color: #38b4ff;
+  letter-spacing: -0.1px;
+}
+.exercise-list .delete-btn,
+.schedule-list .delete-btn {
+  background: #2627b1;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 8px 15px;
+  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 0 2px 14px #3579ff21;
+  transition: background 0.18s, transform 0.11s;
+}
+.exercise-list .delete-btn:hover,
+.schedule-list .delete-btn:hover {
+  background: #451255;
+  transform: scale(1.06);
+}
+.exercise-list .exercise-category {
+  background: #2d3a51;
+  color: #33f6ff;
+  border-radius: 7px;
+  padding: 2px 11px;
+  font-size: 0.99em;
+  margin-left: 9px;
+}
+.exercise-list .exercise-desc {
+  color: #b0c8e4;
+  font-size: 1.03em;
+  margin-top: 3px;
+}
+
+/* ----------- SCHEDULE LIST ----------- */
+.schedule-list {
+  background: rgba(22, 26, 44, 0.92);
+  padding: 28px;
+  border-radius: 21px;
+  box-shadow: 0 11px 50px #1ee9ff1c;
+  max-width: 560px;
+  margin: 30px auto;
+}
+.schedule-date {
+  font-weight: bold;
+  font-size: 1.12em;
+  margin-right: 11px;
+  color: #3cd9fc;
+}
+.schedule-duration {
+  color: #bde0ff;
+  font-size: 1em;
+}
+
+/* ----------- RESPONSIVE ----------- */
+@media (max-width: 800px) {
+  .dashboard { flex-direction: column; }
+  .sidebar { max-width: none; min-width: 100vw; flex-direction: row; align-items: center; padding: 12px 0;}
+  .sidebar-title { font-size: 1.09em; margin-bottom: 0; border: none; padding-bottom: 0;}
+  .sidebar nav { flex-direction: row; gap: 9px; margin: 0;}
+}
+@media (max-width: 600px) {
+  .form, .schedule-list, .exercise-list {
+    max-width: 98vw;
+    padding: 14px 4px;
+  }
+  .main-header { padding: 16px 7px 0 7px;}
+  .main-content { padding: 0 3px 14px 3px;}
+  .exercise-list li, .schedule-li { flex-direction: column; align-items: stretch; gap: 8px;}
+}
+
+/* ----------- SCROLLBAR ----------- */
+::-webkit-scrollbar {
+  width: 8px;
+  background: #21293c;
+}
+::-webkit-scrollbar-thumb {
+  background: #313f59;
+  border-radius: 5px;
+  transition: background 0.17s;
+}
+::-webkit-scrollbar-thumb:hover { background: #4a64b3; }
