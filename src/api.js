@@ -171,7 +171,7 @@ export async function updateTraining(id, data, token) {
 
 
 export async function addScheduledTraining(date, trainingId, token) {
-    const res = await fetch('${API_URL}/api/schedule/add-training', {
+    const res = await fetch(`${API_URL}/api/schedule/add-training`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
