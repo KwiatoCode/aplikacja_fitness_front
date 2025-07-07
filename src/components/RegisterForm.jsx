@@ -8,17 +8,20 @@ export default function RegisterForm({ onRegister }) {
     const [info, setInfo] = useState('');
     const [error, setError] = useState('');
 
-    const handleSubmit = async e => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setInfo('');
         setError('');
-        const res = await register({ username, email, password });
-        if (res.message === 'Registered!') {
-            setInfo('Rejestracja zakończona. Zaloguj się!');
-            setError('');
-            setTimeout(onRegister, 1500);
-        } else {
-            setError(res.error || 'Błąd rejestracji');
+        try {
+            const res = await register({ username, email, password });
+            if (res.message === 'Registered!') {
+                setInfo('Rejestracja zakończona. Zaloguj się!');
+                setTimeout(onRegister, 1500);
+            } else {
+                setError(res.error || 'Błąd rejestracji');
+            }
+        } catch (err) {
+            setError(err.message || 'Błąd rejestracji');
         }
     };
 

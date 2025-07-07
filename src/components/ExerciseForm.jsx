@@ -12,15 +12,20 @@ export default function ExerciseForm({ token }) {
         e.preventDefault();
         setInfo('');
         setError('');
-        const res = await addExercise({ name, description: desc, category }, token);
-        if (res.id) {
-            setInfo('Dodano ćwiczenie!');
-            setError('');
-            setName('');
-            setDesc('');
-            setCategory('');
-        } else {
-            setError('Błąd dodawania ćwiczenia');
+        // Wywołanie addExercise (nazwa zgodna z api.js)
+        try {
+            const res = await addExercise({ name, description: desc, category }, token);
+            if (res.id) {
+                setInfo('Dodano ćwiczenie!');
+                setName('');
+                setDesc('');
+                setCategory('');
+            } else {
+                setError('Błąd dodawania ćwiczenia');
+            }
+        } catch (err) {
+            console.error('Błąd addExercise:', err);
+            setError('Błąd serwera');
         }
     };
 
@@ -52,7 +57,4 @@ export default function ExerciseForm({ token }) {
         </form>
     );
 }
-
-
-
 

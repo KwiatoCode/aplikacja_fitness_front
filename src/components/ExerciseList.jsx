@@ -1,38 +1,35 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getExercises, deleteExercise } from '../api';
 
 export default function ExerciseList({ token }) {
     const [exercises, setExercises] = useState([]);
-    const [info, setInfo] = useState('');
 
     useEffect(() => {
-        getExercises(token).then(data => setExercises(data));
+        getExercises(token).then(setExercises);
     }, [token]);
 
-    const handleDelete = async (id) => {
+    const handleDelete = async id => {
         await deleteExercise(id, token);
-        setExercises(exercises.filter(e => e.id !== id));
-        setInfo('Usunięto ćwiczenie.');
-        setTimeout(() => setInfo(''), 2000);
+        setExercises(prev => prev.filter(ex => ex.id !== id));
     };
 
     return (
-        <div className="exercise-list">
-            <h2>Lista ćwiczeń</h2>
-            {info && <div className="info">{info}</div>}
-            <ul className="exercise-ul">
-                {(!exercises || exercises.length === 0) && <li>Brak ćwiczeń</li>}
-                {exercises && exercises.map(e => (
-                    <li key={e.id} className="exercise-li">
-                        <div>
-                            <span className="exercise-name">{e.name}</span>
-                            <span className="exercise-category">[{e.category || 'brak kategorii'}]</span>
-                        </div>
-                        <div className="exercise-desc">{e.description}</div>
-                        <button className="delete-btn" onClick={() => handleDelete(e.id)}>Usuń</button>
-                    </li>
-                ))}
-            </ul>
+        <div className="exercise-list p-4">
+            <h3 className="text-xl font-bold mb-4">Lista ćwiczeń</h3>
+            {exercises.map(ex => (
+                <div key={ex.id} className="p-4 mb-3 bg-gray-100 rounded-lg shadow">
+                    <div className="font-bold text-lg">{ex.name}</div>
+                    <div className="text-sm text-gray-700">{ex.description}</div>
+                    <div className="text-xs text-blue-500">Kategoria: {ex.category}</div>
+                    <button
+                        className="mt-2 bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded"
+                        onClick={() => handleDelete(ex.id)}
+                    >
+                        Usuń
+                    </button>
+                </div>
+            ))}
         </div>
     );
 }
+

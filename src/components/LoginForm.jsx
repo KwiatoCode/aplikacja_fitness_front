@@ -1,29 +1,26 @@
 import React, { useState } from 'react';
 import { login } from '../api';
 
-export default function LoginForm({ onLogin }) {
+export default function LoginForm({ onLogin, switchToRegister }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [info, setInfo] = useState('');
     const [error, setError] = useState('');
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async e => {
         e.preventDefault();
-        setInfo('');
         setError('');
-        const res = await login({ username, password });
-        if (res.token) {
-            setInfo('Zalogowano pomyślnie!');
-            setError('');
+        try {
+            const res = await login({ username, password });
             onLogin(res.token);
-        } else {
-            setError(res.error || 'Nieprawidłowy login lub hasło');
+        } catch (err) {
+            setError(err.message);
         }
     };
 
     return (
         <form className="form" onSubmit={handleSubmit}>
             <h2>Logowanie</h2>
+            {error && <div className="error">{error}</div>}
             <input
                 type="text"
                 placeholder="Login"
@@ -39,9 +36,11 @@ export default function LoginForm({ onLogin }) {
                 required
             />
             <button type="submit">Zaloguj</button>
-            {info && <div className="info">{info}</div>}
-            {error && <div className="error">{error}</div>}
+            <button type="button" onClick={switchToRegister} style={{ marginTop: '10px', background: '#595aff' }}>
+                Zarejestruj się
+            </button>
         </form>
     );
 }
+
 

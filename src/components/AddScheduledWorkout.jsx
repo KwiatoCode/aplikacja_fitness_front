@@ -1,53 +1,53 @@
-import React, { useState } from 'react';
-import { addScheduledWorkout } from '../api';
+import React, { useEffect, useState } from 'react';
+import { getExercises, addScheduledWorkout } from '../api';
 
-export default function AddScheduledWorkout({ token, onAdded }) {
-    const [date, setDate] = useState('');
+export default function AddScheduledWorkout({ token, initialDate, onAdded }) {
+    const [exercises, setExercises] = useState([]);
+    const [selectedExerciseId, setSelectedExerciseId] = useState('');
     const [duration, setDuration] = useState('');
-    const [info, setInfo] = useState('');
-    const [error, setError] = useState('');
+    const [date, setDate] = useState(initialDate);
 
-    const handleSubmit = async (e) => {
+    useEffect(() => {
+        getExercises(token).then(setExercises);
+    }, [token]);
+
+    useEffect(() => {
+        setDate(initialDate);
+    }, [initialDate]);
+
+    const handleSubmit = async e => {
         e.preventDefault();
-        setInfo('');
-        setError('');
-        const workout = {
-            date,
-            duration: Number(duration),
-            scheduledExercises: [], // Tu możesz rozbudować w przyszłości
-        };
-        const res = await addScheduledWorkout(workout, token);
-        if (res && res.id) {
-            setInfo('Dodano trening!');
-            setError('');
-            setDate('');
+        try {
+            await addScheduledWorkout(
+                { date, scheduledExercises: [{ exercise: { id: +selectedExerciseId }, durationMinutes: +duration }] },
+                token
+            );
             setDuration('');
-            if (onAdded) onAdded();
-        } else {
-            setError('Błąd dodawania treningu');
+            setSelectedExerciseId('');
+            onAdded();
+        } catch (err) {
+            console.error('Add workout failed:', err);
         }
     };
 
     return (
-        <form className="form" onSubmit={handleSubmit}>
-            <h2>Dodaj zaplanowany trening</h2>
-            <input
-                type="date"
-                value={date}
-                onChange={e => setDate(e.target.value)}
-                required
-            />
-            <input
-                type="number"
-                placeholder="Czas trwania (minuty)"
-                value={duration}
-                onChange={e => setDuration(e.target.value)}
-                min={1}
-            />
+        <form onSubmit={handleSubmit} className="form">
+            <label>
+                Data:
+                <input type="date" value={date} onChange={e => setDate(e.target.value)} required />
+            </label>
+            <label>
+                Ćwiczenie:
+                <select value={selectedExerciseId} onChange={e => setSelectedExerciseId(e.target.value)} required>
+                    <option value="">Wybierz…</option>
+                    {exercises.map(ex => <option key={ex.id} value={ex.id}>{ex.name}</option>)}
+                </select>
+            </label>
+            <label>
+                Czas (min):
+                <input type="number" value={duration} onChange={e => setDuration(e.target.value)} min="1" required />
+            </label>
             <button type="submit">Dodaj trening</button>
-            {info && <div className="info">{info}</div>}
-            {error && <div className="error">{error}</div>}
         </form>
     );
 }
-

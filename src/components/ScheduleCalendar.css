@@ -1,0 +1,32 @@
+/* Podstawowe style kalendarza */
+.my-calendar,
+.react-calendar {
+    width: 100%;
+    max-width: 500px;
+    background: #fff;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    font-family: sans-serif;
+}
+
+/* Podświetlenie dni z eventami */
+.rc-has-event {
+    background: #e6f7ff !important;
+    border-radius: 6px;
+}
+
+/* Licznik ćwiczeń */
+.rc-event-count {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.75rem;
+    color: #0050b3;
+}
+
+/* Hover tooltip */
+.react-calendar__tile:focus,
+.react-calendar__tile:hover {
+    background: #f0f5ff !important;
+    color: #000;
+}

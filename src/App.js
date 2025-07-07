@@ -1,95 +1,128 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Routes, Route, Navigate, NavLink } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
+
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
-import ExerciseForm from './components/ExerciseForm';
-import ExerciseList from './components/ExerciseList';
-import ScheduleList from './components/ScheduleList';
-import AddScheduledWorkout from './components/AddScheduledWorkout';
+import HomePage from './pages/HomePage';
+import WorkoutsPage from './pages/WorkoutsPage';
+import ExercisesPage from './pages/ExercisesPage';
+import SchedulePage from './pages/SchedulePage';
+import TrainingsPage from './pages/TrainingsPage';
+import AdminPage from './pages/AdminPage';
+
 import './App.css';
 
 function App() {
     const [token, setToken] = useState(localStorage.getItem('token') || '');
-    const [showRegister, setShowRegister] = useState(false);
-    const [refresh, setRefresh] = useState(false);
+    const [userId, setUserId] = useState(null);
+    const [userRole, setUserRole] = useState('USER');  // <--- dodane!
+    const [isRegister, setIsRegister] = useState(false);
 
-    const handleLogin = (token) => {
-        localStorage.setItem('token', token);
-        setToken(token);
+    useEffect(() => {
+        if (token) {
+            try {
+                const decoded = jwtDecode(token);
+                setUserId(decoded.id);
+                setUserRole(decoded.role || 'USER');
+            } catch {
+                setUserId(null);
+                setUserRole('USER');
+            }
+        } else {
+            setUserId(null);
+            setUserRole('USER');
+        }
+    }, [token]);
+
+    const handleLogin = tok => {
+        localStorage.setItem('token', tok);
+        setToken(tok);
     };
 
     const handleLogout = () => {
         localStorage.removeItem('token');
         setToken('');
+        setUserId(null);
+        setUserRole('USER');
     };
 
-    // Domyślny zakres miesiąca
-    const today = new Date();
-    const monthStart = today.toISOString().slice(0, 8) + '01';
-    const monthEnd = today.toISOString().slice(0, 8) + '31';
+    const PrivateRoute = ({ children }) =>
+        token ? children : <Navigate to="/login" replace />;
 
     return (
         <div className="dashboard">
-            <aside className="sidebar">
-                <div className="sidebar-title">🏋️‍♂️ FitApp</div>
-                <nav>
-                    <a href="#" className="active">Strona główna</a>
-                    <a href="#">Treningi</a>
-                    <a href="#">Ćwiczenia</a>
-                    <a href="#">Kalendarz</a>
-                </nav>
-                <div className="sidebar-footer">
-                    <a href="#">Profil</a>
-                </div>
-            </aside>
+            {token && (
+                <aside className="sidebar">
+                    <h3 className="sidebar-title">🏋️‍♂️ FitApp</h3>
+                    <nav>
+                        <NavLink to="/home">Strona główna</NavLink>
+                        <NavLink to="/treningi">Treningi</NavLink>
+                        <NavLink to="/cwiczenia">Ćwiczenia</NavLink>
+                        <NavLink to="/kalendarz">Kalendarz</NavLink>
+                        {userRole === "ADMIN" && (
+                            <NavLink to="/admin">Panel admina</NavLink>
+                        )}
+                    </nav>
+                    <button className="logout-btn" onClick={handleLogout}>
+                        Wyloguj
+                    </button>
+                </aside>
+            )}
+
             <main className="main-area">
-                <header className="main-header">
-                    <h1>Twój panel fitness</h1>
-                </header>
-                <section className="main-content">
-                    <div className="app-container">
-                        <div className="form">
-                            {token ? (
-                                <>
-                                    <button className="logout-btn" onClick={handleLogout}>
-                                        Wyloguj
-                                    </button>
-                                    <ExerciseForm token={token} />
-                                    <ExerciseList token={token} />
-                                    <AddScheduledWorkout
-                                        token={token}
-                                        onAdded={() => setRefresh(!refresh)}
-                                    />
-                                    <ScheduleList
-                                        token={token}
-                                        start={monthStart}
-                                        end={monthEnd}
-                                        key={refresh}
-                                    />
-                                </>
-                            ) : (
-                                <>
-                                    <div className="tab-btns" style={{ marginBottom: 20 }}>
-                                        <button
-                                            className={!showRegister ? 'active' : ''}
-                                            onClick={() => setShowRegister(false)}
-                                        >
-                                            Logowanie
-                                        </button>
-                                        <button
-                                            className={showRegister ? 'active' : ''}
-                                            onClick={() => setShowRegister(true)}
-                                        >
-                                            Rejestracja
-                                        </button>
-                                    </div>
-                                    {showRegister
-                                        ? <RegisterForm onRegister={() => setShowRegister(false)} />
-                                        : <LoginForm onLogin={handleLogin} />}
-                                </>
-                            )}
-                        </div>
-                    </div>
-                </section>
+                <Routes>
+                    <Route
+                        path="/login"
+                        element={
+                            token ? <Navigate to="/home" replace /> : (
+                                !isRegister ? (
+                                    <LoginForm onLogin={handleLogin} switchToRegister={() => setIsRegister(true)} />
+                                ) : (
+                                    <RegisterForm onRegister={() => setIsRegister(false)} switchToLogin={() => setIsRegister(false)} />
+                                )
+                            )
+                        }
+                    />
+
+                    <Route path="/register" element={<Navigate to="/login" replace />} />
+
+                    <Route
+                        path="/home"
+                        element={
+                            <PrivateRoute>
+                                <HomePage token={token} />
+                            </PrivateRoute>
+                        }
+                    />
+
+                    <Route
+                        path="/treningi"
+                        element={
+                            <PrivateRoute>
+                                <TrainingsPage token={token} />
+                            </PrivateRoute>
+                        }
+                    />
+
+                    <Route path="/cwiczenia" element={<PrivateRoute><ExercisesPage token={token} /></PrivateRoute>} />
+                    <Route path="/kalendarz" element={<PrivateRoute><SchedulePage token={token} /></PrivateRoute>} />
+
+                    {/* Panel admina TYLKO dla ADMIN */}
+                    <Route
+                        path="/admin"
+                        element={
+                            <PrivateRoute>
+                                {userRole === "ADMIN"
+                                    ? <AdminPage token={token} />
+                                    : <Navigate to="/home" />}
+                            </PrivateRoute>
+                        }
+                    />
+
+                    <Route path="/" element={<Navigate to={token ? '/home' : '/login'} replace />} />
+                    <Route path="*" element={<Navigate to={token ? '/home' : '/login'} replace />} />
+                </Routes>
             </main>
         </div>
     );
