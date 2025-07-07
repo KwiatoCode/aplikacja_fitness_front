@@ -1,5 +1,4 @@
- const API_URL = process.env.REACT_APP_API_URL + '/api';
-
+const API_URL = process.env.REACT_APP_API_URL + '/api';
 
 // Rejestracja
 export async function register(data) {
@@ -8,16 +7,10 @@ export async function register(data) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
     });
-
-    // spróbuj sparsować JSON
     const payload = await res.json().catch(() => ({}));
-
-    // jeśli status nie jest 2xx, rzuć wyjątek
     if (!res.ok) {
-        // backend może zwrócić { error: "..." } albo { message: "..." }
         throw new Error(payload.error || payload.message || 'Błąd rejestracji');
     }
-
     return payload;
 }
 
@@ -43,7 +36,7 @@ export async function addExercise(data, token) {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(date)
+        body: JSON.stringify(data)
     });
     return await res.json();
 }
@@ -63,14 +56,14 @@ export async function deleteExercise(id, token) {
 }
 
 // Harmonogram treningów
-export async function addScheduledWorkout(date, token) {
+export async function addScheduledWorkout(data, token) {
     const res = await fetch(`${API_URL}/schedule`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(date)
+        body: JSON.stringify(data)
     });
     if (!res.ok) {
         throw new Error(`Server returned ${res.status}`);
@@ -80,14 +73,13 @@ export async function addScheduledWorkout(date, token) {
 }
 
 export async function getSchedule(start, end, token) {
-    const res = await fetch(`${API_URL}/api/schedule?start=${start}&end=${end}`, {
+    const res = await fetch(`${API_URL}/schedule?start=${start}&end=${end}`, {
         headers: { 'Authorization': `Bearer ${token}` }
     });
     const text = await res.text();
     if (!text) return [];
     return JSON.parse(text);
 }
-
 
 export async function deleteScheduledWorkout(id, token) {
     await fetch(`${API_URL}/schedule/${id}`, {
@@ -130,6 +122,7 @@ export async function getSummary(start, end, token) {
     }
 }
 
+// Treningi
 export async function getTrainings(token) {
     const res = await fetch(`${API_URL}/trainings`, {
         headers: { 'Authorization': `Bearer ${token}` }
@@ -137,14 +130,14 @@ export async function getTrainings(token) {
     return await res.json();
 }
 
-export async function addTraining(date, token) {
+export async function addTraining(data, token) {
     const res = await fetch(`${API_URL}/trainings`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(date)
+        body: JSON.stringify(data)
     });
     return await res.json();
 }
@@ -156,18 +149,19 @@ export async function deleteTraining(id, token) {
     });
 }
 
-export async function updateTraining(id, date, token) {
+export async function updateTraining(id, data, token) {
     const res = await fetch(`${API_URL}/trainings/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(date)
+        body: JSON.stringify(data)
     });
     return await res.json();
 }
 
+// Dodanie treningu do kalendarza (przypisanie gotowego treningu do dnia)
 export async function addScheduledTraining(date, trainingId, token) {
     const res = await fetch(`${API_URL}/schedule/add-training`, {
         method: 'POST',
@@ -180,6 +174,7 @@ export async function addScheduledTraining(date, trainingId, token) {
     if (!res.ok) throw new Error('Błąd zapisywania treningu w kalendarzu');
     return await res.json();
 }
+
 
 
 
