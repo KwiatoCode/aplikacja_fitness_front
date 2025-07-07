@@ -80,7 +80,7 @@ export async function addScheduledWorkout(data, token) {
 }
 
 export async function getSchedule(start, end, token) {
-    const res = await fetch(`/api/schedule?start=${start}&end=${end}`, {
+    const res = await fetch(`${API_URL}/api/schedule?start=${start}&end=${end}`, {
         headers: { 'Authorization': `Bearer ${token}` }
     });
     const text = await res.text();
@@ -131,7 +131,7 @@ export async function getSummary(start, end, token) {
 }
 
 export async function getTrainings(token) {
-    const res = await fetch('/api/trainings', {
+    const res = await fetch('${API_URL}/api/trainings', {
         headers: { 'Authorization': `Bearer ${token}` }
     });
     return await res.json();
@@ -139,7 +139,7 @@ export async function getTrainings(token) {
 
 // Dodaj nowy trening
 export async function addTraining(data, token) {
-    const res = await fetch('/api/trainings', {
+    const res = await fetch('${API_URL}/api/trainings', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -151,14 +151,14 @@ export async function addTraining(data, token) {
 }
 
 export async function deleteTraining(id, token) {
-    await fetch(`/api/trainings/${id}`, {
+    await fetch(`${API_URL}/api/trainings/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
     });
 }
 
 export async function updateTraining(id, data, token) {
-    const res = await fetch(`/api/trainings/${id}`, {
+    const res = await fetch(`${API_URL}/api/trainings/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -171,7 +171,7 @@ export async function updateTraining(id, data, token) {
 
 
 export async function addScheduledTraining(date, trainingId, token) {
-    const res = await fetch('/api/schedule/add-training', {
+    const res = await fetch('${API_URL}/api/schedule/add-training', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
