@@ -43,7 +43,7 @@ export async function addExercise(data, token) {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(date)
     });
     return await res.json();
 }
@@ -63,14 +63,14 @@ export async function deleteExercise(id, token) {
 }
 
 // Harmonogram treningów
-export async function addScheduledWorkout(data, token) {
+export async function addScheduledWorkout(date, token) {
     const res = await fetch(`${API_URL}/schedule`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(date)
     });
     if (!res.ok) {
         throw new Error(`Server returned ${res.status}`);
@@ -137,14 +137,14 @@ export async function getTrainings(token) {
     return await res.json();
 }
 
-export async function addTraining(data, token) {
+export async function addTraining(date, token) {
     const res = await fetch(`${API_URL}/trainings`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(date)
     });
     return await res.json();
 }
@@ -156,14 +156,14 @@ export async function deleteTraining(id, token) {
     });
 }
 
-export async function updateTraining(id, data, token) {
+export async function updateTraining(id, date, token) {
     const res = await fetch(`${API_URL}/trainings/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(date)
     });
     return await res.json();
 }
