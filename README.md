@@ -1,1 +1,0 @@
-# aplikacja_fitness_front
