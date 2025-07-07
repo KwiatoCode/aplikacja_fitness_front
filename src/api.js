@@ -168,14 +168,14 @@ export async function updateTraining(id, data, token) {
     return await res.json();
 }
 
-export async function addScheduledTraining(date, trainingId, token) {
+export async function addScheduledTraining(data, trainingId, token) {
     const res = await fetch(`${API_URL}/schedule/add-training`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ date, trainingId })
+        body: JSON.stringify({ data, trainingId })
     });
     if (!res.ok) throw new Error('Błąd zapisywania treningu w kalendarzu');
     return await res.json();
